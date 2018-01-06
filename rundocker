@@ -1,9 +1,10 @@
 #!/bin/bash
 xhost +local:
 
-container_id=`docker ps -l | grep ros-kinetic-dev | awk '{print $1}'`
+container_id=`docker ps -a | grep ros-kinetic-dev | awk '{print $1}'`
 if [[ -z "$container_id" ]]; then
   docker run -it --net=host \
+    --security-opt=seccomp:unconfined \
     --user=$(id -u) \
     -e DISPLAY=$DISPLAY \
     -e QT_GRAPHICSSYSTEM=native \
@@ -21,7 +22,7 @@ if [[ -z "$container_id" ]]; then
     brandeisrobotics/docker-ros:latest
 else
   echo "Found container: $container_id"
-  docker start --attach $container_id
+  docker start $container_id
 fi
 
 
